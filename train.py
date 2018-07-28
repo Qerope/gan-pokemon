@@ -6,6 +6,15 @@ import numpy as np
 import data
 import models
 
+from PIL import Image
+
+
+def save_grid(gen, step, n=5):
+    z = np.random.normal(size=(n * n, models.LATENT))
+    imgs = (gen.predict(z) * 255).astype(np.uint8)
+    grid = imgs.reshape(n, n, 64, 64, 3).transpose(0, 2, 1, 3, 4).reshape(n * 64, n * 64, 3)
+    os.makedirs('samples', exist_ok=True)
+    Image.fromarray(grid).save('samples/%06d.png' % step)
 
 
 def main():
@@ -28,6 +37,8 @@ def main():
             d_loss += disc.train_on_batch(fake, np.zeros((batch, 1)))
             g_loss = gan.train_on_batch(z, np.ones((batch, 1)))
             step += 1
+            if step % 200 == 0:
+                save_grid(gen, step)
                 print(step, d_loss, g_loss)
 
 
