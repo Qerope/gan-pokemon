@@ -11,7 +11,7 @@ from PIL import Image
 
 def save_grid(gen, step, n=5):
     z = np.random.normal(size=(n * n, models.LATENT))
-    imgs = (gen.predict(z) * 255).astype(np.uint8)
+    imgs = ((gen.predict(z) + 1) * 127.5).astype(np.uint8)
     grid = imgs.reshape(n, n, 64, 64, 3).transpose(0, 2, 1, 3, 4).reshape(n * 64, n * 64, 3)
     os.makedirs('samples', exist_ok=True)
     Image.fromarray(grid).save('samples/%06d.png' % step)

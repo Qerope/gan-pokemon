@@ -15,7 +15,7 @@ def build_generator():
         x = Conv2DTranspose(filters, 5, strides=2, padding='same')(x)
         x = BatchNormalization()(x)
         x = Activation('relu')(x)
-    x = Conv2DTranspose(3, 5, strides=2, padding='same', activation='sigmoid')(x)
+    x = Conv2DTranspose(3, 5, strides=2, padding='same', activation='tanh')(x)
     return Model(z, x)
 
 
