@@ -6,6 +6,7 @@ import numpy as np
 import data
 import models
 
+OPT_ARGS = dict(lr=2e-4, beta_1=0.5)
 from PIL import Image
 
 
@@ -21,9 +22,9 @@ def main():
     x = data.load_sprites()
     gen = models.build_generator()
     disc = models.build_discriminator()
-    disc.compile('adam', 'binary_crossentropy')
+    disc.compile(models.Adam(**models.OPT_ARGS), 'binary_crossentropy')
     gan = models.build_gan(gen, disc)
-    gan.compile('adam', 'binary_crossentropy')
+    gan.compile(models.Adam(**models.OPT_ARGS), 'binary_crossentropy')
 
     batch = 64
     step = 0

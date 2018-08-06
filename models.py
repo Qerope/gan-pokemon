@@ -1,6 +1,7 @@
 from keras.layers import (Activation, BatchNormalization, Conv2D, Conv2DTranspose, Dense,
                           Flatten, Input, LeakyReLU, Reshape)
 from keras.models import Model
+from keras.optimizers import Adam
 
 LATENT = 100
 
@@ -24,7 +25,9 @@ def build_discriminator():
     x = img
     for filters in (64, 128, 256):
         x = Conv2D(filters, 5, strides=2, padding='same')(x)
-        x = Activation('relu')(x)
+        if filters > 64:
+            x = BatchNormalization()(x)
+        x = LeakyReLU(0.2)(x)
     x = Flatten()(x)
     x = Dense(1, activation='sigmoid')(x)
     return Model(img, x)
