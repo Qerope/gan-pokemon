@@ -34,7 +34,8 @@ def main():
             real = x[idx[k:k + batch]]
             z = np.random.normal(size=(batch, models.LATENT))
             fake = gen.predict(z)
-            d_loss = disc.train_on_batch(real, np.ones((batch, 1)))
+            real_labels = np.where(np.random.rand(batch, 1) < 0.05, 0.0, 1.0)
+            d_loss = disc.train_on_batch(real, real_labels)
             d_loss += disc.train_on_batch(fake, np.zeros((batch, 1)))
             g_loss = gan.train_on_batch(z, np.ones((batch, 1)))
             step += 1
