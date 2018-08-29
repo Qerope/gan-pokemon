@@ -43,6 +43,10 @@ def main():
             if step % 200 == 0:
                 save_grid(gen, step)
                 print(step, d_loss, g_loss)
+            if step % 1000 == 0:
+                os.makedirs('checkpoints', exist_ok=True)
+                gen.save_weights('checkpoints/gen_%d.h5' % step)
+                disc.save_weights('checkpoints/disc_%d.h5' % step)
 
 
 if __name__ == '__main__':
