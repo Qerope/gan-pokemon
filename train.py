@@ -28,6 +28,7 @@ def main():
 
     batch = 64
     step = 0
+    history = []
     for epoch in range(300):
         idx = np.random.permutation(len(x))
         for k in range(0, len(x) - batch + 1, batch):
@@ -43,10 +44,20 @@ def main():
             if step % 200 == 0:
                 save_grid(gen, step)
                 print(step, d_loss, g_loss)
+                history.append((step, d_loss, g_loss))
             if step % 1000 == 0:
                 os.makedirs('checkpoints', exist_ok=True)
                 gen.save_weights('checkpoints/gen_%d.h5' % step)
                 disc.save_weights('checkpoints/disc_%d.h5' % step)
+
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    h = np.array(history)
+    plt.plot(h[:, 0], h[:, 1], label='D')
+    plt.plot(h[:, 0], h[:, 2], label='G')
+    plt.legend()
+    plt.savefig('losses.png')
 
 
 if __name__ == '__main__':
