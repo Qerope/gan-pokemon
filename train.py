@@ -19,17 +19,25 @@ def save_grid(gen, step, n=5):
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--epochs', type=int, default=300)
+    ap.add_argument('--resume')
+    args = ap.parse_args()
+
     x = data.load_sprites()
     gen = models.build_generator()
     disc = models.build_discriminator()
     disc.compile(models.Adam(**models.OPT_ARGS), 'binary_crossentropy')
     gan = models.build_gan(gen, disc)
     gan.compile(models.Adam(**models.OPT_ARGS), 'binary_crossentropy')
+    if args.resume:
+        gen.load_weights(args.resume)
+        disc.load_weights(args.resume.replace('gen_', 'disc_'))
 
     batch = 64
     step = 0
     history = []
-    for epoch in range(300):
+    for epoch in range(args.epochs):
         idx = np.random.permutation(len(x))
         for k in range(0, len(x) - batch + 1, batch):
             real = x[idx[k:k + batch]]
